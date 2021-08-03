@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+import logging, json
+
+from aiohttp import web
+from inverterd import Format, Client as InverterClient, InverterError
+from argparse import ArgumentParser
+
+routes = web.RouteTableDef()
+inv_host = None
+inv_port = None
+
+
+@routes.get('/{command}/')
+async def variable_handler(request):
+    command = request.match_info['command']
+
+    inverter = InverterClient(host=inv_host, port=inv_port)
+    inverter.connect()
+    inverter.format(Format.JSON)
+
+    try:
+        response = inverter.exec(command)
+    except InverterError as e:
+        response = str(e)
+
+    try:
+        response = json.loads(response)
+    except json.decoder.JSONDecodeError:
+        response = {'error': response}
+
+    return web.json_response(response, dumps=lambda x: json.dumps(x, separators=(',', ':')))
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('--inverter-host', required=True, type=str)
+    parser.add_argument('--inverter-port', type=int, default=8305)
+    parser.add_argument('--host', default='0.0.0.0', type=str)
+    parser.add_argument('--port', default=8080, type=int)
+    args = parser.parse_args()
+
+    inv_host = args.inverter_host
+    inv_port = args.inverter_port
+
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=logging.INFO)
+
+    app = web.Application()
+    app.add_routes(routes)
+    web.run_app(app)
