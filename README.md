@@ -16,10 +16,10 @@ Assuming inverterd host is `192.168.1.2`:
 inverter-http-proxy --inverter-host 192.168.1.2 --host 127.0.0.1 --port 8080
 ```
 
-Then open https://127.0.0.1/get-status/ in the browser. You can replace `get-status`
+Then open https://127.0.0.1/get-status/ in browser. You can replace `get-status`
 with any command supported by inverterd.
 
-Command arguments are not supported at the moment.
+Command arguments aren't supported at the moment.
 
 ## License
 
