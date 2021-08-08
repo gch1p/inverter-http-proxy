@@ -14,12 +14,16 @@ inv_port = None
 async def variable_handler(request):
     command = request.match_info['command']
 
+    args = []
+    if 'args' in request.query:
+        args = request.query['args'].split(',')
+
     inverter = InverterClient(host=inv_host, port=inv_port)
     inverter.connect()
     inverter.format(Format.JSON)
 
     try:
-        response = inverter.exec(command)
+        response = inverter.exec(command, arguments=args)
     except InverterError as e:
         response = str(e)
 

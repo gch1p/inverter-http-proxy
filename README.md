@@ -19,7 +19,8 @@ inverter-http-proxy --inverter-host 192.168.1.2 --host 127.0.0.1 --port 8080
 Then open https://127.0.0.1:8080/get-status/ in browser. You can replace `get-status`
 with any command supported by inverterd.
 
-Command arguments aren't supported at the moment.
+To pass arguments: https://127.0.0.1:8080/get-day-generated/?args=2021,8,8
+
 
 ## License
 
